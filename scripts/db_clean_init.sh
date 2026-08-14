@@ -37,9 +37,6 @@ check_prereqs() {
   fi
 
   [[ -f "$REPO_ROOT/.envrc" ]] || die ".envrc not found at $REPO_ROOT; see README"
-  if ! direnv status 2>/dev/null | grep -q 'Found RC allowed true'; then
-    printf 'warning: .envrc is not allowed by direnv; run: direnv allow\n' >&2
-  fi
 }
 
 # Requires the .envrc vars; refuses to guess, so a stale global PGDATA
@@ -66,8 +63,8 @@ check_env() {
 confirm() {
   ((ASSUME_YES)) && return 0
   printf 'This DELETES %s and all data in it.\n' "$PGDATA"
-  read -r -p 'Type the database name to continue: ' reply
-  [[ "$reply" == "$PGDATABASE" ]] || die "aborted"
+  read -r -p 'Continue? [y/N] ' reply
+  [[ "$reply" == y || "$reply" == Y ]] || die "aborted"
 }
 
 stop_existing() {
